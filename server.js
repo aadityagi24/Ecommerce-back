@@ -7,6 +7,14 @@ const productRoutes = require('./routes/productRoutes')
 const cors = require('cors');
 
 
+app.use(
+  cors({
+    origin: "https://ecommerce-front-4fy5mp3qj-aadis-projects-d8feca22.vercel.app",
+    credentials: true,
+  })
+);
+
+
 // config env
 dotenv.config();
 
