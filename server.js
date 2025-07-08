@@ -5,6 +5,7 @@ const authRoute = require('./routes/authRoute.js');
 const categoryRoutes = require('./routes/categoryRoutes.js');
 const productRoutes = require('./routes/productRoutes');
 const cors = require('cors');
+const morgan = require('morgan'); // Added for request logging
 
 // config env
 dotenv.config();
@@ -15,6 +16,10 @@ connectDB();
 // rest object
 const app = express();
 
+// Middlewares
+app.use(morgan('dev')); // Request logging
+app.use(express.json()); // Parse JSON bodies
+
 // CORS Configuration
 app.use(cors({
   origin: "https://ecommerce-front-three-sigma.vercel.app",
@@ -22,9 +27,6 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
-
-// Middleware to parse JSON
-app.use(express.json()); 
 
 // Routes
 app.use('/api/v1/auth', authRoute);
@@ -34,6 +36,24 @@ app.use('/api/v1/product', productRoutes);
 // Default route
 app.get('/', (req, res) => {
   res.send("Welcome to my new website");
+});
+
+// Error handling middleware (must be after all routes)
+app.use((err, req, res, next) => {
+  console.error('Error:', err.stack);
+  res.status(500).json({
+    success: false,
+    message: 'Internal Server Error',
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+});
+
+// 404 handler (must be last)
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'Endpoint not found'
+  });
 });
 
 // Port
