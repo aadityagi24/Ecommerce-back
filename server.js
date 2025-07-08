@@ -7,12 +7,7 @@ const productRoutes = require('./routes/productRoutes')
 const cors = require('cors');
 
 
-app.use(
-  cors({
-    origin: "https://ecommerce-front-4fy5mp3qj-aadis-projects-d8feca22.vercel.app",
-    credentials: true,
-  })
-);
+
 
 
 // config env
@@ -26,12 +21,19 @@ const app = express();
 
 // middleware to parse JSON
 app.use(express.json()); // for reading req.body in POST requests
-app.use(cors());
+
+app.use(
+  cors({
+    origin: "https://ecommerce-front-4fy5mp3qj-aadis-projects-d8feca22.vercel.app",
+    credentials: true,
+  })
+);
 
 // routes
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/category', categoryRoutes);
 app.use('/api/v1/product', productRoutes);
+
 
 
 // rest api
