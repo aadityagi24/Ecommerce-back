@@ -1,72 +1,57 @@
-const express = require('express')
-const {registerController ,
-     loginController ,
-      testController, 
-      forgetPasswordController,
-      updateProfileController ,
-       getOrdersController,
-      getAllOrdersController ,
-      orderStatusController,
-      getAllUsersController
-    }= require('../controllers/authController.js')
-//router object
-const router = express.Router()
- const {requireSignIn,isAdmin} = require ("../middlewares/authMiddleware");
+const express = require('express');
+const {
+  registerController,
+  loginController,
+  testController,
+  forgetPasswordController,
+  updateProfileController,
+  getOrdersController,
+  getAllOrdersController,
+  orderStatusController,
+  getAllUsersController,
+} = require('../controllers/authController.js');
 
+const { requireSignIn, isAdmin } = require("../middlewares/authMiddleware");
 
+const router = express.Router();
 
+// Auth Routes
 
-//routing
-//register||method post
+// Register
 router.post('/register', registerController);
 
-
-//login || post
+// Login
 router.post('/login', loginController);
 
-//forgot passwowd ||post
-router.post('/forgot-password',forgetPasswordController )
+// Forgot Password
+router.post('/forgot-password', forgetPasswordController);
 
+// Test route (admin only)
+router.get('/test', requireSignIn, isAdmin, testController);
 
-
-//test route
-router.get('/test', requireSignIn,isAdmin, testController);
-
-
-//update profile
+// Update user profile
 router.put("/profile", requireSignIn, updateProfileController);
 
-//orders
+// User orders
 router.get("/orders", requireSignIn, getOrdersController);
 
-//all orders
+// Admin: get all orders
 router.get("/all-orders", requireSignIn, isAdmin, getAllOrdersController);
 
-// order status update
-router.put(
-  "/order-status/:orderId",
-  requireSignIn,
-  isAdmin,
-  orderStatusController
-);
+// Admin: update order status
+router.put("/order-status/:orderId", requireSignIn, isAdmin, orderStatusController);
 
-///all user in admin dashboard
+// Admin: get all users
 router.get('/all-users', requireSignIn, isAdmin, getAllUsersController);
 
+//  Protected route for user dashboard
+router.get('/user-auth', requireSignIn, (req, res) => {
+  res.status(200).send({ ok: true });
+});
 
-// //protected route for dashboard
-// router.get('/user-auth', requireSignIn, (req, res) => {
-//   res.status(200).send({ ok: true });
-// });
-
-// //protected route for  admin dashboard
-// router.get('/aminr-auth', requireSignIn,isAdmin, (req, res) => {
-//   res.status(200).send({ ok: true });
-// });
-
-
+//  Protected route for admin dashboard
+router.get('/admin-auth', requireSignIn, isAdmin, (req, res) => {
+  res.status(200).send({ ok: true });
+});
 
 module.exports = router;
-
-
-
