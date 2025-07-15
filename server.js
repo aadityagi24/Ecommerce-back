@@ -3,9 +3,8 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db'); 
 const authRoute = require('./routes/authRoute.js');
 const categoryRoutes = require('./routes/categoryRoutes.js');
-const productRoutes = require('./routes/productRoutes')
+const productRoutes = require('./routes/productRoutes');
 const cors = require('cors');
-
 
 // config env
 dotenv.config();
@@ -16,15 +15,19 @@ connectDB();
 // rest object
 const app = express();
 
+// ✅ CORS Configuration — allow frontend from Vercel
+app.use(cors({
+  origin: "https://ecommerce-front-five-gamma.vercel.app", // your frontend
+  credentials: true,
+}));
+
 // middleware to parse JSON
 app.use(express.json()); // for reading req.body in POST requests
-app.use(cors());
 
 // routes
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/category', categoryRoutes);
 app.use('/api/v1/product', productRoutes);
-
 
 // rest api
 app.get('/', (req, res) => {
