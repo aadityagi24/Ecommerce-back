@@ -15,14 +15,24 @@ connectDB();
 // rest object
 const app = express();
 
-// ✅ CORS Configuration — allow frontend from Vercel
+// ✅ CORS setup
 app.use(cors({
-  origin: "https://ecommerce-front-five-gamma.vercel.app", // your frontend
+  origin: "https://ecommerce-front-five-gamma.vercel.app",
   credentials: true,
 }));
+app.options("*", cors()); // handle preflight
+
+// ✅ Set headers manually (just to be safe)
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://ecommerce-front-five-gamma.vercel.app");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  next();
+});
 
 // middleware to parse JSON
-app.use(express.json()); // for reading req.body in POST requests
+app.use(express.json());
 
 // routes
 app.use('/api/v1/auth', authRoute);
