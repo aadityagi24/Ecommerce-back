@@ -1,57 +1,44 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const cors = require('cors');
 const connectDB = require('./config/db'); 
-
-// Route Imports
-const authRoute = require('./routes/authRoute');
-const categoryRoutes = require('./routes/categoryRoutes');
+const authRoute = require('./routes/authRoute.js');
+const categoryRoutes = require('./routes/categoryRoutes.js');
 const productRoutes = require('./routes/productRoutes');
+const cors = require('cors');
 
-// Initialize .env
+// config env
 dotenv.config();
 
-// Connect to MongoDB
+// database config
 connectDB();
 
-// Initialize Express App
+// rest object
 const app = express();
 
-// CORS Configuration
-const FRONTEND_URL = "https://ecommerce-front-five-gamma.vercel.app";
-
+// ✅ CORS Configuration — allow frontend from Vercel
 app.use(cors({
-  origin: FRONTEND_URL,
+  origin: "https://ecommerce-front-five-gamma.vercel.app", // your frontend
   credentials: true,
 }));
 
-// Optional: Handle preflight requests
-app.options("*", cors());
+// middleware to parse JSON
+app.use(express.json()); // for reading req.body in POST requests
 
-// Optional: Extra CORS headers manually (safe fallback)
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", FRONTEND_URL);
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  next();
-});
-
-// Body parser
-app.use(express.json());
-
-// Mount routes
+// routes
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/category', categoryRoutes);
 app.use('/api/v1/product', productRoutes);
 
-// Root route
+// rest api
 app.get('/', (req, res) => {
-  res.send(" Backend is live — QuickCart API");
+  res.send("Welcome to my new website");
 });
 
-// Start Server
+// port
 const PORT = process.env.PORT || 8080;
+
+// run listen
 app.listen(PORT, () => {
-  console.log(` Server running on port ${PORT}`);
+  console.log(`Server is running on ${PORT}`);
 });
+fix here
