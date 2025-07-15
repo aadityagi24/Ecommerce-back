@@ -1,53 +1,57 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const connectDB = require('./config/db'); 
-const authRoute = require('./routes/authRoute.js');
-const categoryRoutes = require('./routes/categoryRoutes.js');
-const productRoutes = require('./routes/productRoutes');
 const cors = require('cors');
+const connectDB = require('./config/db'); 
 
-// config env
+// Route Imports
+const authRoute = require('./routes/authRoute');
+const categoryRoutes = require('./routes/categoryRoutes');
+const productRoutes = require('./routes/productRoutes');
+
+// Initialize .env
 dotenv.config();
 
-// database config
+// Connect to MongoDB
 connectDB();
 
-// rest object
+// Initialize Express App
 const app = express();
 
-// ✅ CORS setup
+// CORS Configuration
+const FRONTEND_URL = "https://ecommerce-front-five-gamma.vercel.app";
+
 app.use(cors({
-  origin: "https://ecommerce-front-five-gamma.vercel.app",
+  origin: FRONTEND_URL,
   credentials: true,
 }));
-app.options("*", cors()); // handle preflight
 
-// ✅ Set headers manually (just to be safe)
+// Optional: Handle preflight requests
+app.options("*", cors());
+
+// Optional: Extra CORS headers manually (safe fallback)
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://ecommerce-front-five-gamma.vercel.app");
+  res.header("Access-Control-Allow-Origin", FRONTEND_URL);
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   next();
 });
 
-// middleware to parse JSON
+// Body parser
 app.use(express.json());
 
-// routes
+// Mount routes
 app.use('/api/v1/auth', authRoute);
 app.use('/api/v1/category', categoryRoutes);
 app.use('/api/v1/product', productRoutes);
 
-// rest api
+// Root route
 app.get('/', (req, res) => {
-  res.send("Welcome to my new website");
+  res.send(" Backend is live — QuickCart API");
 });
 
-// port
+// Start Server
 const PORT = process.env.PORT || 8080;
-
-// run listen
 app.listen(PORT, () => {
-  console.log(`Server is running on ${PORT}`);
+  console.log(` Server running on port ${PORT}`);
 });
