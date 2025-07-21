@@ -17,7 +17,7 @@ const app = express();
 
 // ✅ CORS Configuration — allow frontend from Vercel
 app.use(cors({
-  origin: "https://ecommerce-front-five-gamma.vercel.app", // your frontend
+  origin: "https://ecommerce-front-nine-eta.vercel.app/", // your frontend
   credentials: true,
 }));
 
